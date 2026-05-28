@@ -1,4 +1,5 @@
 import argparse
+import importlib.metadata
 import os
 import re
 import warnings
@@ -340,6 +341,12 @@ def main():
         dest="redis_ssl",
         action="store_true",
         help="Flag to enable ssl connection with redis",
+    )
+    parser.add_argument(
+        "-V",
+        "--version",
+        action="version",
+        version=f"%(prog)s {importlib.metadata.version('nslsii')}",
     )
     parser.add_argument("-v", "--verbose", action=argparse.BooleanOptionalAction)
     args = parser.parse_args()
