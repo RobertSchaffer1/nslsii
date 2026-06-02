@@ -1,16 +1,17 @@
 from tiled.queries import Comparison, Eq, Key, Like, NotEq, Regex
 from pprint import pprint
+from bluesky_tiled_plugins.clients.catalog_of_bluesky_runs import CatalogOfBlueskyRuns
 
 
-def get_parent_directory(catalog):
+def get_parent_directory(catalog: CatalogOfBlueskyRuns) -> str:
     """
     Helper function to extract the parent directory from the catalog.
     This function iterates through the documents in the catalog until it finds a resource document.
     It is assuming that, sometimes, scans are aborted and a resource document might not be present in the catalog.
     Parameters
     ----------
-    catalog : tiled.client.Catalog
-        The tiled catalog to extract the parent directory from.
+    catalog : CatalogOfBlueskyRuns
+        The catalog of Bluesky runs to extract the parent directory from.
     Returns
     -------
     str
@@ -26,13 +27,13 @@ def get_parent_directory(catalog):
                 return parent_directory
 
 
-def find_proposals(client, pi_name, cycle=None, optional_queries=None, show_title=True):
+def find_proposals(client: CatalogOfBlueskyRuns, pi_name: str, cycle: str = None, optional_queries: dict = None, show_title: bool = True):
     """
     Find proposals for a given PI name and optionally filter by cycle.
     Parameters
     ----------
-    client : tiled.client.Client
-        The tiled client to use for querying the data.
+    client : CatalogOfBlueskyRuns
+        The catalog of Bluesky runs to use for querying the data.
     pi_name : str
         The full or partial (First or Last) name of the principal investigator (PI) to search for.
     cycle : str, optional
@@ -64,7 +65,6 @@ def find_proposals(client, pi_name, cycle=None, optional_queries=None, show_titl
     }
 
     sql_prefix = "start." if client.is_sql else ""
-
     if client.is_sql:
         results = client.search(Like(f"{sql_prefix}proposal.pi_name", f"%{pi_name}%"))
     else:
