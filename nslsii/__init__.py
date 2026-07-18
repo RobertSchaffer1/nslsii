@@ -2,6 +2,7 @@ import logging
 import os
 import sys
 import warnings
+from importlib.metadata import PackageNotFoundError, version
 from logging.handlers import SysLogHandler, TimedRotatingFileHandler
 from pathlib import Path
 
@@ -9,11 +10,14 @@ import appdirs
 from IPython import get_ipython
 
 from .utils import open_redis_client
-from ._version import get_versions
 
-__version__ = get_versions()["version"]
-del get_versions
-
+try:
+    from ._version import __version__
+except ImportError:
+    try:
+        __version__ = version("nslsii")
+    except PackageNotFoundError:
+        __version__ = "unknown"
 
 bluesky_log_file_path = None
 
