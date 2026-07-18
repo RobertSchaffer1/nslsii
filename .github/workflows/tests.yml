@@ -34,7 +34,7 @@ jobs:
       run: |
         set -vxeuo pipefail
         pip install --upgrade pip wheel
-        pip install .
+        pip install .[dev]
         pip list
 
     - name: Test with pytest
