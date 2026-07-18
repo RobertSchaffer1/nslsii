@@ -35,7 +35,6 @@ jobs:
         set -vxeuo pipefail
         pip install --upgrade pip wheel
         pip install .
-        pip install -r requirements-dev.txt
         pip list
 
     - name: Test with pytest
