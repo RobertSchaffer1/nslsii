@@ -35,7 +35,7 @@ dependencies = [
   "numpy",
   "opencv-python",
   "ophyd",
-  "ophyd-async",
+  "ophyd-async[ca]",
   "packaging",
   "pillow",
   "psutil",
