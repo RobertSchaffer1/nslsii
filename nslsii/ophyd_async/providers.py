@@ -1,7 +1,7 @@
 from datetime import date
 from enum import Enum
 from pathlib import Path
-from typing import Callable, Optional
+from typing import Callable, Optional, cast, Generic
 from ophyd_async.core import (
     FilenameProvider,
     PathProvider,
@@ -37,7 +37,7 @@ class YMDGranularity(int, Enum):
 AcqModeT = TypeVar("AcqModeT", bound=Enum)
 
 
-class AcqModeFilenameProvider(UUIDFilenameProvider):
+class AcqModeFilenameProvider(UUIDFilenameProvider, Generic[AcqModeT]):
     """Filename provider that includes acquisition mode in the filename.
 
     Parameters
@@ -116,7 +116,7 @@ class AcqModeFilenameProvider(UUIDFilenameProvider):
 
         """
 
-        filename = super().__call__(device_name=self._mode.value)
+        filename = super().__call__(datakey_name=cast(AcqModeT, self._mode).value)
         if self._mode is not None:
             filename = f"{self._mode.value}_{filename}"
         if self._include_datakey_name and datakey_name is not None:
@@ -170,14 +170,16 @@ class NSLS2PathProvider(PathProvider):
         self._granularity = granularity
         self._ymd_separator = separator
 
-        beamline_data_dir = (beamline_tla if beamline_tla is not None else os.getenv(
-            "ENDSTATION_ACRONYM", os.getenv("BEAMLINE_ACRONYM", "")
-        ).lower()) + (beamline_tla_suffix or "")
+        beamline_data_dir = (
+            beamline_tla
+            if beamline_tla is not None
+            else os.getenv(
+                "ENDSTATION_ACRONYM", os.getenv("BEAMLINE_ACRONYM", "")
+            ).lower()
+        ) + (beamline_tla_suffix or "")
 
         self._beamline_proposals_dir = (
-            Path("/nsls2/data/")
-            / beamline_data_dir
-            / "proposals"
+            Path("/nsls2/data/") / beamline_data_dir / "proposals"
         )
 
         self._include_scan_id_dir = include_scan_id_dir
