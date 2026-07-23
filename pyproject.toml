@@ -62,6 +62,7 @@ dev = [
   "pims",
   "pre-commit",
   "pytest",
+  "pytest-asyncio",
   "pytz",
   "ruff",
   "sphinx",
